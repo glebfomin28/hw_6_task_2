@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {ItemNote} from "./ItemNote";
 
-export const ListNotes = ({items, deleteText, setFlagDel}) => {
-
-
+export const ListNotes = ({items, deleteText}) => {
 
 
     const printListNotes = items.map(el =>
@@ -12,7 +10,6 @@ export const ListNotes = ({items, deleteText, setFlagDel}) => {
             id={el.id}
             content={el.content}
             deleteText={deleteText}
-            setFlagDel={setFlagDel}
         />
     )
 

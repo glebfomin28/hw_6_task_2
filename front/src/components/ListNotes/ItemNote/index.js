@@ -1,9 +1,8 @@
 import React from 'react';
 
-export const ItemNote = ({content, id, deleteText, setFlagDel}) => {
+export const ItemNote = ({content, id, deleteText}) => {
     const onDeleteItem = () => {
         deleteText(id)
-        setFlagDel(true)
     }
 
     return (

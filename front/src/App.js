@@ -6,14 +6,8 @@ import {NewNotes} from "./components/NewNotes";
 function App() {
     const [reset, setReset] = useState(false)
     const [items, setItems] = useState([])
-    const [dellItems, setDellItems] = useState(null)
-
-    const [flagNew, setFlagNew] = useState(false)
-    const [flagDel, setFlagDel] = useState(false)
 
     const getNotes = () => {
-        setFlagNew(false)
-        setFlagDel(false)
         fetch('http://localhost:7777/notes')
             .then( (res) => res.json())
             .then((res) => setItems(res))
@@ -26,17 +20,38 @@ function App() {
 
     useEffect( () => {
         getNotes()
-    }, [flagNew, flagDel, reset])
+    }, [reset])
+
 
     const deleteText = (id) => {
-        setDellItems(id)
+        fetch('http://localhost:7777/notes/' + id, {
+            method: 'DELETE',
+        }).then(response => {
+            if (response.status >= 200 && response.status < 300) {
+                setItems(p => p.filter(item => item.id !== id));
+                return response;
+            }
+        })
+        getNotes()
     }
 
-    useEffect(() => {
-        fetch('http://localhost:7777/notes/' + dellItems, {
-            method: 'DELETE',
-        }).then(response => response)
-    }, [flagDel])
+    const pushText = (text, id) => {
+        fetch("http://localhost:7777/notes", {
+            method: "post",
+            headers: {
+                'Content-Type':'application/json'
+            },
+
+            body: JSON.stringify({id:id, content: text})
+        })
+            .then( (response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    setItems(p => [...p, {id:id, content: text}]);
+                }
+                return response;
+            })
+        getNotes()
+    }
 
     const onReset = () => {
         setReset(p => !p)
@@ -49,13 +64,11 @@ function App() {
             </div>
             <div className="body">
                 <NewNotes
-                    setItems={setItems}
-                    setFlagNew={setFlagNew}
+                    pushText={pushText}
                 />
                 <ListNotes
                     items={items}
                     deleteText={deleteText}
-                    setFlagDel={setFlagDel}
                 />
             </div>
 
